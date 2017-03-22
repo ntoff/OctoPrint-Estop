@@ -6,7 +6,9 @@ Add a big ugly emergency stop to your sidebar. It's big, it's yellow, it's red, 
 
 That's the point of an EMERGENCY stop!
 
-![](/extras/assets/img/plugins/estop/enabled.PNG)
+Enabled vs Disabled (It disables the button if a user is not logged in, or the printer is offline)
+
+![](/extras/assets/img/plugins/estop/enabled.PNG) vs ![](/extras/assets/img/plugins/estop/disabled.PNG)
 ## Setup
 
 Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
