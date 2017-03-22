@@ -2,7 +2,7 @@
 
 Add a big ugly emergency stop to your sidebar. It's big, it's yellow, it's red, it's impossible to miss. That's the point.
 
-## THIS BUTTON DOES NOT CONFIRM BEFORE SENDING! 
+### THIS BUTTON DOES NOT CONFIRM BEFORE SENDING! 
 
 That's the point of an EMERGENCY stop!
 
