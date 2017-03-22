@@ -1,4 +1,4 @@
 <div class="estop_sidebar">
-	<button type="button" id="emergemcy_stop" title="send M112 estop gcode command" class="btn-estop" data-bind="enable: terminal.isOperational() && loginState.isAdmin(), click: function() { sendEstopCommand() }"><i class="fa fa-times" size="+2"></i>{{ _(' EMERGENCY STOP ') }}<i class="fa fa-times" size="+2"></i></button>
+	<button type="button" id="emergemcy_stop" title="send M112 estop gcode command" class="btn-estop" data-bind="enable: enableEstop, click: function() { sendEstopCommand() }"><i class="fa fa-times" size="+2"></i>{{ _(' EMERGENCY STOP ') }}<i class="fa fa-times" size="+2"></i></button>
 </div>
 
