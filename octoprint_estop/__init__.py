@@ -12,12 +12,11 @@ class EstopPlugin(octoprint.plugin.AssetPlugin,
 			css=["css/estop.css"]
 		)
 	def get_template_configs(self):
-		return [dict(type="sidebar", name="Emergency STOP!", icon="fa fa-times")]
+		return [
+			dict(type="sidebar", name="Emergency STOP!", icon="fa fa-times", template="estop_sidebar.jinja2", styles=["display: none"], data_bind="visible: loginState.isUser")
+			]
         
 __plugin_name__ = "Emergency Stop Button"
-
-def __plugin_load__():
-	global __plugin_implementation__
-	__plugin_implementation__ = EstopPlugin()
+__plugin_implementation__ = EstopPlugin()
 
 	
