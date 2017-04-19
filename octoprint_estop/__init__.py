@@ -15,11 +15,10 @@ class EstopPlugin(octoprint.plugin.AssetPlugin,
 		return [
 			dict(type="sidebar", name="Emergency STOP!", icon="fa icon-print", template="estop_sidebar.jinja2", styles=["display: none"], data_bind="visible: loginState.isUser")
 			]
-            
-    def get_update_information(self):
-		
+
+	def get_update_information(self):
 		return dict(
-			skeleton=dict(
+			estop=dict(
 				displayName="Emergency Stop Button",
 				displayVersion=self._plugin_version,
 
@@ -32,7 +31,8 @@ class EstopPlugin(octoprint.plugin.AssetPlugin,
 				# update method: pip
 				pip="https://github.com/ntoff/OctoPrint-Estop/archive/{target_version}.zip"
 			)
-		)    
+		)
+
 __plugin_name__ = "Emergency Stop Button"
 
 def __plugin_load__():
