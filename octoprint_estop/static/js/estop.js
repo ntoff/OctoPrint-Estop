@@ -8,6 +8,9 @@ $(function() {
 		
         self.loginState = parameters[0];
         self.printerState = parameters[1];
+        self.settings = parameters[2];
+
+        self.estopCommand = ko.observable("M112");
 
 		self.enableEstop = ko.pureComputed(function() {
             return self.printerState.isOperational() && self.loginState.isUser();
@@ -25,9 +28,18 @@ $(function() {
             }
         });
 
+        self.buttonTitle = ko.pureComputed(function() {
+            self.estopCommand(self.settings.settings.plugins.estop.estopCommand());
+            return gettext("Sends " + self.estopCommand() + " to the printer IMMEDIATELY");
+        });
+
+        self.onBeforeBinding = function () {
+            //self.estopCommand(self.settings.settings.plugins.estop.estopCommand());
+        }
 		self.sendEstopCommand = function () {
 			if (self.enableEstop()) {
-				OctoPrint.control.sendGcode("M112"); 
+                self.estopCommand(self.settings.settings.plugins.estop.estopCommand());
+                OctoPrint.control.sendGcode(self.estopCommand());
 			};
         };
     }
@@ -37,7 +49,7 @@ $(function() {
         dependencies: [
 			"loginStateViewModel", 
 			"printerStateViewModel",
-			],
+			"settingsViewModel"],
         elements: ["#sidebar_plugin_estop_wrapper"]
     });
 });

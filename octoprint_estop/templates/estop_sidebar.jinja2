@@ -1,4 +1,4 @@
 <div id="sidebar_estop_background" class="estop_sidebar" data-bind="css: estopState">
-	<button type="button" id="emergemcy_stop" title="send M112 estop gcode command" class="btn-estop" data-bind="text: buttonText, enable: enableEstop, click: function() { sendEstopCommand() }"></button>
+	<button type="button" id="emergemcy_stop" class="btn-estop" data-bind="attr: { title: buttonTitle }, text: buttonText, enable: enableEstop, click: function() { sendEstopCommand() }"></button>
 </div>
 
