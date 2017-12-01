@@ -23,7 +23,7 @@ class EstopPlugin(octoprint.plugin.StartupPlugin,
 		)
 	def get_template_configs(self):
 		return [
-			dict(type="sidebar", name="Emergency STOP!", icon="fa fa-print", template="estop_sidebar.jinja2", styles=["display: none"], data_bind="visible: loginState.isUser"),
+			dict(type="sidebar", name="Emergency STOP!", icon="close", template="estop_sidebar.jinja2", styles=["display: none"], data_bind="visible: loginState.isUser"),
 			dict(type="settings", name="E-Stop Settings", template="estop_settings.jinja2", custom_bindings=False)
 			]
 
