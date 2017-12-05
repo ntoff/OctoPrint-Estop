@@ -10,7 +10,7 @@ That's the point of an EMERGENCY stop!
 
 ## Setup
 
-Install manually using this URL:
+Install via the bundled plugin manager, or manually using this URL:
 
     https://github.com/ntoff/OctoPrint-Estop/archive/master.zip
 
@@ -21,7 +21,6 @@ Once installed, you may wish to move the button to the top of the sidebar, you c
 Find the "appearance" section, and add the plugin to the top of the sidebar order. If no other components have been previously rearranged, you may end up with only the plugin in the order list, this  is fine, you don't need to add every item to the list (not adding them  won't stop them from showing up).
 
     appearance:
-      color: violet
       components:
         order:
           sidebar:
