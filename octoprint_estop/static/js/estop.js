@@ -5,14 +5,15 @@
 $(function() {
     function EstopViewModel(parameters) {
         var self = this;
-		
+        
         self.loginState = parameters[0];
         self.printerState = parameters[1];
         self.settings = parameters[2];
 
         self.estopCommand = ko.observable("M112");
+        self.estopReconnect = ko.observable(false);
 
-		self.enableEstop = ko.pureComputed(function() {
+        self.enableEstop = ko.pureComputed(function() {
             return self.printerState.isOperational() && self.loginState.isUser();
         });
 
@@ -34,22 +35,39 @@ $(function() {
         });
 
         self.onBeforeBinding = function () {
-            //self.estopCommand(self.settings.settings.plugins.estop.estopCommand());
+            self.updateSettingsValues();
         }
-		self.sendEstopCommand = function () {
-			if (self.enableEstop()) {
+        self.onSettingsHidden = function () {
+            self.updateSettingsValues();
+        }
+
+        self.updateSettingsValues = function () { //lazy way of making sure we have the latest version of the settings
+            self.estopCommand(self.settings.settings.plugins.estop.estopCommand());
+            self.estopReconnect(self.settings.settings.plugins.estop.estopReconnect());
+        }
+
+        self.sendEstopCommand = function () {
+            if (self.enableEstop()) {
                 self.estopCommand(self.settings.settings.plugins.estop.estopCommand());
                 OctoPrint.control.sendGcode(self.estopCommand());
-			};
+
+                if (self.estopReconnect()) {                    //cycle the connection (if enabled) to reset the control board
+                    OctoPrint.connection.disconnect();          //send a disconnect, maybe useful for breaking out of blocking commands.
+
+                    self.onEventDisconnected =function () {     //wait until octoprint has disconnected
+                        OctoPrint.connection.connect();         //reconnect
+                    }
+                }
+            };
         };
     }
 
-	OCTOPRINT_VIEWMODELS.push({
+    OCTOPRINT_VIEWMODELS.push({
         construct: EstopViewModel,
         dependencies: [
-			"loginStateViewModel", 
-			"printerStateViewModel",
-			"settingsViewModel"],
+            "loginStateViewModel", 
+            "printerStateViewModel",
+            "settingsViewModel"],
         elements: ["#sidebar_plugin_estop_wrapper"]
     });
 });

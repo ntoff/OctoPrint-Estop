@@ -9,7 +9,9 @@ class EstopPlugin(octoprint.plugin.StartupPlugin,
 				octoprint.plugin.SettingsPlugin):
 
 	def get_settings_defaults(self):
-		return dict(estopCommand = "M112")
+		return dict(
+			estopCommand = "M112",
+			estopReconnect = False)
 
 	def on_after_startup(self):
 		self.estopCommand = self._settings.get(["estopCommand"])
@@ -26,6 +28,14 @@ class EstopPlugin(octoprint.plugin.StartupPlugin,
 			dict(type="sidebar", name="Emergency STOP!", icon="close", template="estop_sidebar.jinja2", styles=["display: none"], data_bind="visible: loginState.isUser"),
 			dict(type="settings", name="E-Stop Settings", template="estop_settings.jinja2", custom_bindings=False)
 			]
+	
+	def on_settings_save(self, data):
+		s = self._settings
+		if "estopCommand" in data.keys():
+			s.set(["estopCommand"], data["estopCommand"])
+		if "estopReconnect" in data.keys():
+			s.setBoolean(["estopReconnect"], data["estopReconnect"])
+		s.save()
 
 	def get_update_information(self):
 		return dict(
