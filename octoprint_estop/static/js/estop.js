@@ -54,8 +54,9 @@ $(function() {
                 if (self.estopReconnect()) {                    //cycle the connection (if enabled) to reset the control board
                     OctoPrint.connection.disconnect();          //send a disconnect, maybe useful for breaking out of blocking commands.
 
-                    self.onEventDisconnected =function () {     //wait until octoprint has disconnected
-                        OctoPrint.connection.connect();         //reconnect
+                    self.onEventDisconnected = function () {     //wait until octoprint has disconnected
+                        self.onEventDisconnected = null;         //unregister event handler
+                        OctoPrint.connection.connect();          //reconnect
                     }
                 }
             };
