@@ -54,19 +54,9 @@ $(function() {
             self.updateSettingsValues();
         }
 
-        self.updateSettingsValues = function () { //lazy way of making sure we have the latest version of the settings
+        self.updateSettingsValues = function () {
             self.estopCommand(self.settings.settings.plugins.estop.estopCommand());
             self.estopReconnect(self.settings.settings.plugins.estop.estopReconnect());
-        }
-        
-        self.onEventDisconnected = function () {
-            if (self.estopReconnect() && self.emergencyCalled()) {  
-                self.timedReconnect = setTimeout(function() {   //reconnect 3 seconds after detecting the printer is offline
-                    self.emergencyCalled(false);
-                    OctoPrint.connection.connect();
-                        
-                }, 3*1000); //3 seconds
-            }
         }
         
         self.sendEstopCommand = function () {
@@ -76,7 +66,15 @@ $(function() {
                 
                 if (self.estopReconnect()) {
                     self.emergencyCalled(true);
-                    OctoPrint.connection.disconnect(); //normally octoprint would probably disconnect anyway, just calling this here in case the printer is in a blocking loop
+                    OctoPrint.connection.disconnect();
+                    self.onEventDisconnected = function () {
+                        self.timedReconnect = setTimeout(function() {
+                            self.emergencyCalled(false);
+                            delete self.onEventDisconnected;
+                            OctoPrint.connection.connect();
+                                
+                        }, 3*1000); //3 seconds
+                    }
                 }
             }
         }
