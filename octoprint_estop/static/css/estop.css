@@ -77,3 +77,10 @@
 #sidebar_plugin_estop {
     display: block !important;
 }
+.estop-warning-icon {
+    color: #eb0000;
+    font-size: 2em !important;
+}
+.estop-warning {
+    font-style: italic;
+}
