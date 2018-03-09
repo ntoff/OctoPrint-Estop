@@ -30,11 +30,15 @@ $(function() {
         self.buttonText = ko.pureComputed(function() {
             if (self.enableEstop()) {
                 return gettext("EMERGENCY STOP"); 
-            } else if (self.reconnect()) {
+            } 
+            else if (self.reconnect()) {
                 return gettext("Reconnecting...")
             }
-            else {
+            else if (!self.enableEstop()) {
                 return gettext("Offline"); 
+            }
+            else {
+                return gettext("Unknown Status");
             }
         });
 
@@ -67,11 +71,11 @@ $(function() {
         
         self.sendEstopCommand = function () {
             if (self.enableEstop()) {
-                self.emergencyCalled(true);
                 self.estopCommand(self.settings.settings.plugins.estop.estopCommand());
                 OctoPrint.control.sendGcode(self.estopCommand());
                 
                 if (self.estopReconnect()) {
+                    self.emergencyCalled(true);
                     OctoPrint.connection.disconnect(); //normally octoprint would probably disconnect anyway, just calling this here in case the printer is in a blocking loop
                 }
             }
