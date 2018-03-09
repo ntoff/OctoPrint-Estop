@@ -13,7 +13,7 @@
             <label class="control-label">{{ _('Cycle the connection?') }}</label>
             <div class="controls">
                 <input type="checkbox" class="input-block" data-bind="checked: settings.plugins.estop.estopReconnect">
-                <span class="help-block">Enabling this will attempt to automatically cycle the connection to the printer. This may cause the printer's control board to be reset (may help break out of blocking commands).</span>
+                <span class="help-block">Enabling this will attempt to automatically cycle the connection to the printer. This may cause the printer's control board to be reset and may help break out of blocking commands. Waits 3 seconds after the printer is "offline" before reconnecting.</span>
             </div>
         </div>
     </form>
