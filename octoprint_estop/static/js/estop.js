@@ -12,6 +12,7 @@ $(function() {
 
         self.estopCommand = ko.observable("M112");
         self.estopReconnect = ko.observable(false);
+        self.emergencyCalled = ko.observable(false);
 
         self.enableEstop = ko.pureComputed(function() {
             return self.printerState.isOperational() && self.loginState.isUser();
@@ -20,11 +21,19 @@ $(function() {
         self.estopState = ko.pureComputed(function() {
             return self.loginState.isUser() > 0 ? "estop_sidebar" : "estop_sidebar_disabled";
         });
+        
+        self.reconnect = ko.pureComputed(function() {
+            return self.estopReconnect() && self.emergencyCalled();
+            
+        })
 
         self.buttonText = ko.pureComputed(function() {
             if (self.enableEstop()) {
                 return gettext("EMERGENCY STOP"); 
-            } else {
+            } else if (self.reconnect()) {
+                return gettext("Reconnecting...")
+            }
+            else {
                 return gettext("Offline"); 
             }
         });
@@ -45,22 +54,28 @@ $(function() {
             self.estopCommand(self.settings.settings.plugins.estop.estopCommand());
             self.estopReconnect(self.settings.settings.plugins.estop.estopReconnect());
         }
-
+        
+        self.onEventDisconnected = function () {
+            if (self.estopReconnect() && self.emergencyCalled()) {  
+                self.timedReconnect = setTimeout(function() {   //reconnect 3 seconds after detecting the printer is offline
+                    self.emergencyCalled(false);
+                    OctoPrint.connection.connect();
+                        
+                }, 3*1000); //3 seconds
+            }
+        }
+        
         self.sendEstopCommand = function () {
             if (self.enableEstop()) {
+                self.emergencyCalled(true);
                 self.estopCommand(self.settings.settings.plugins.estop.estopCommand());
                 OctoPrint.control.sendGcode(self.estopCommand());
-
-                if (self.estopReconnect()) {                    //cycle the connection (if enabled) to reset the control board
-                    OctoPrint.connection.disconnect();          //send a disconnect, maybe useful for breaking out of blocking commands.
-
-                    self.onEventDisconnected = function () {     //wait until octoprint has disconnected
-                        self.onEventDisconnected = null;         //unregister event handler
-                        OctoPrint.connection.connect();          //reconnect
-                    }
+                
+                if (self.estopReconnect()) {
+                    OctoPrint.connection.disconnect(); //normally octoprint would probably disconnect anyway, just calling this here in case the printer is in a blocking loop
                 }
-            };
-        };
+            }
+        }
     }
 
     OCTOPRINT_VIEWMODELS.push({
